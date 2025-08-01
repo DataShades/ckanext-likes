@@ -1,0 +1,16 @@
+version: 1
+groups:
+    - annotation: likes configuration
+      options:
+
+          - key: ckanext.likes.option.name
+            default: 10
+            type: int
+            description: |
+                Integer placerat tristique nisl.
+
+          - key: ckanext.likes.multivalued.option
+            type: list
+            editable: true
+            description: |
+                Another option that will be parsed as a list of words.

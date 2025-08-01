@@ -1,0 +1,13 @@
+
+{% ckan_extends %}
+
+{% block styles %}
+    {{ super() }}
+    {% asset "likes/likes-css" %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {% asset "likes/likes-js" %}
+{% endblock %}
+
