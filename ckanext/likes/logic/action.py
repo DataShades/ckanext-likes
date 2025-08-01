@@ -2,57 +2,58 @@ from __future__ import annotations
 
 from typing import Any
 
-import ckan.plugins.toolkit as tk
-from ckan import model
-from ckan.logic import validate
-from ckan.types import Context
+import sqlalchemy as sa
 
-from ckanext.likes.model import Something
+import ckan.plugins.toolkit as tk
+from ckan import model, types
+
+from ckanext.likes.model import Like
 
 from . import schema
 
 
+def _get_user_id(context: types.Context, data_dict: dict[str, Any]) -> str | None:
+    if id := data_dict.get("user_id"):
+        return id
+
+    user = context.get("auth_user_obj")  # pyright: ignore[reportUnknownVariableType]
+    if isinstance(user, model.User):
+        return user.id
+
+    if user := model.User.get(context["user"]):
+        return user.id
+
+
 @tk.side_effect_free
-@validate(schema.get_sum)
-def likes_get_sum(context: Context, data_dict: dict[str, Any]):
-    """Produce a sum of left and right.
+@tk.validate_action_data(schema.like_show)
+def likes_like_show(context: types.Context, data_dict: dict[str, Any]):
+    """Show like-stats of the object."""
+    stmt = Like.by_object(data_dict["id"], data_dict["type"])
+    count = model.Session.scalar(stmt.with_only_columns(sa.func.count()))
 
-    Args:
-        left (int): firt argument
-        right (int): second argument
+    if user_id := _get_user_id(context, data_dict):
+        liked = Like.exists(data_dict["id"], data_dict["type"], user_id)
+    else:
+        liked = False
 
-    Returns:
-        operation details
-    """
-    tk.check_access("likes_get_sum", context, data_dict)
-
-    return {
-        "left": data_dict["left"],
-        "right": data_dict["right"],
-        "sum": data_dict["left"] + data_dict["right"],
-    }
+    return {"count": count, "liked": liked}
 
 
-@validate(schema.something_create)
-def likes_something_create(context: Context, data_dict: dict[str, Any]):
-    """Create something object.
+@tk.validate_action_data(schema.like_show)
+def likes_like_toggle(context: types.Context, data_dict: dict[str, Any]):
+    """Toggle liked state of the object."""
+    user_id = _get_user_id(context, data_dict)
+    if not user_id or Like.unlike(data_dict["id"], data_dict["type"], user_id):
+        liked = False
 
-    Args:
-        hello (str): aliquam erat volutpat
-        world: (str): nullam tempus
-        plugin_data (dict[str, Any], optional): aliquam feugiat tellus ut neque
+    else:
+        obj = Like(
+            object_id=data_dict["id"], object_type=data_dict["type"], user_id=user_id
+        )
+        model.Session.add(obj)
+        liked = True
 
-    Returns:
-        details of the new something object
-    """
-    tk.check_access("likes_something_create", context, data_dict)
+    if not context.get("defer_commit"):
+        model.Session.commit()
 
-    smth = Something(
-        hello=data_dict["hello"],
-        world=data_dict["world"],
-        plugin_data=data_dict.get("plugin_data", {}),
-    )
-    model.Session.add(smth)
-    model.Session.commit()
-
-    return smth.dictize(context)
+    return {"liked": liked}

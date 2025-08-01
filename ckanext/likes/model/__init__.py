@@ -1,5 +1,5 @@
-from .something import Something
+from .like import Like
 
 __all__ = [
-    "Something",
+    "Like",
 ]

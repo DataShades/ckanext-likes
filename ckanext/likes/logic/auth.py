@@ -3,15 +3,16 @@ from __future__ import annotations
 from typing import Any
 
 import ckan.plugins.toolkit as tk
-from ckan.types import Context
+from ckan import types
 
 
 @tk.auth_allow_anonymous_access
-def likes_get_sum(context: Context, data_dict: dict[str, Any]):
-    """Any user can compute sum."""
+def likes_like_toggle(context: types.Context, data_dict: dict[str, Any]):
+    if not context["user"]:
+        return {"success": True, "message": "Only authorized users can like things"}
     return {"success": True}
 
 
-def likes_something_create(context: Context, data_dict: dict[str, Any]):
-    """Authenticated user can create something."""
+@tk.auth_allow_anonymous_access
+def likes_like_show(context: types.Context, data_dict: dict[str, Any]):
     return {"success": True}

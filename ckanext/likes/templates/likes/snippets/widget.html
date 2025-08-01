@@ -1,0 +1,32 @@
+{#
+    count
+    liked
+    object_id
+    object_type
+    inline_trigger
+    #}
+
+{% set classes = classes or "d-flex gap-2 align-items-center" %}
+{% set count = count or 0 %}
+{% set inline_trigger = "intersect once" %}
+
+
+{% set url = h.url_for('likes.like', id=object_id, type=object_type) %}
+
+
+<span class="likes-widget {{ classes }}" hx-swap="outerHTML" style="cursor: pointer;"
+    {% if inline %}
+    hx-get="{{ url }}"
+    hx-trigger="{{ inline_trigger }}"
+    {% else %}
+    hx-post="{{ url }}"
+    hx-trigger="click"
+    {% endif %}
+>
+    {% block icon %}
+        {% include "likes/snippets/icon.html" %}
+    {% endblock icon %}
+    {% block counter%}
+        <span class="count">{{ count }}</span>
+    {% endblock %}
+</span>

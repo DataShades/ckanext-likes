@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from playwright.sync_api import expect, Page
+from playwright.sync_api import Page, expect
 
 expect.set_options(timeout=1000)
 
