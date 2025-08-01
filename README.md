@@ -1,4 +1,4 @@
-[![Tests](https://github.com//ckanext-likes/workflows/tests.yml/badge.svg)](https://github.com//ckanext-likes/actions/workflows/test.yml)
+[![Tests](https://github.com/DataShades/ckanext-likes/actions/workflows/tests.yml/badge.svg)](https://github.com/DataShades/ckanext-likes/actions/workflows/test.yml)
 
 # ckanext-likes
 
@@ -62,7 +62,10 @@ Add like-widget on any page and it will automatically initialize and update
 likes for the specified object:
 
 ```jinja
-{% snippet "likes/snippets/widget.html", object_id=OBJECT_ID, object_type=OBJECT_TYPE, inline=true %}
+{%
+    snippet "likes/snippets/widget.html",
+    object_id=OBJECT_ID, object_type=OBJECT_TYPE, inline=true
+%}
 ```
 
 `inline` flag renders widget with 0 likes. When the widget appears in the
@@ -76,7 +79,10 @@ if you have a lot of widgets on the page, such as like-buttons agains every
 comment in the comments thread.
 
 ```jinja
-{% snippet "likes/snippets/widget.html", object_id=OBJECT_ID, object_type=OBJECT_TYPE, inline=true, inline_trigger="load" %}
+{%
+    snippet "likes/snippets/widget.html",
+    object_id=OBJECT_ID, object_type=OBJECT_TYPE, inline=true, inline_trigger="load"
+%}
 ```
 
 If you already know the number of likes for the object and whether current
@@ -85,5 +91,8 @@ visitor has already liked the object, specify these parameters as `count` and
 widget won't perform additional requests to the backend during initialization:
 
 ```jinja
-{% snippet "likes/snippets/widget.html", object_id=OBJECT_ID, object_type=OBJECT_TYPE, count=100, liked=true %}
+{%
+    snippet "likes/snippets/widget.html",
+    object_id=OBJECT_ID, object_type=OBJECT_TYPE, count=100, liked=true
+%}
 ```
