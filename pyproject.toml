@@ -8,7 +8,6 @@ version = "0.0.1"
 description = ""
 classifiers = [
             "Development Status :: 4 - Beta",
-            "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
             "Programming Language :: Python :: 3.12",
@@ -26,12 +25,11 @@ maintainers = [
     {name = "DataShades", email = "datashades@linkdigital.com.au"},
 ]
 
+license = {text="MIT"}
+
 [project.readme]
 file = "README.md"
 content-type = "text/markdown"
-
-[project.license]
-text = "AGPL"
 
 [project.urls]
 Homepage = "https://github.com/DataShades/ckanext-likes"
